@@ -1,7 +1,11 @@
 import sys
 import os
-from PyQt5.QtWidgets import QWidget, QDesktopWidget, QApplication, QLineEdit, QPushButton
+
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QWidget, QDesktopWidget, QApplication, QLineEdit, QPushButton, QLabel
 from PyQt5.QtCore import pyqtSlot
+from qtpy import QtGui
+
 
 class Main_Widget(QWidget):
 
@@ -43,8 +47,17 @@ class Main_Widget(QWidget):
     def on_click(self):
         os.system("python ../script.py " + str(self.tb_depth.text()) + " " +
                   str(self.tb_start_id.text()) + " " + str(self.tb_finish_id.text()))
-        # return
 
+        os.system("python ../code.py")
+
+        self.tb_finish_id.deleteLater()
+        self.tb_start_id.deleteLater()
+        self.tb_btn_id.deleteLater()
+        self.label = QLabel(self)
+        self.pixmap = QPixmap('graph.jpg')
+        self.label.setPixmap(self.pixmap)
+        self.resize(self.pixmap.width(), self.pixmap.height())
+        self.show()
     def center(self):
 
         qr = self.frameGeometry()
