@@ -42,7 +42,7 @@ while len(q) > 0 and curD <= maxD and not found:
         try:
             response = r.get(
                 "https://api.vk.com/method/friends.get?access_token={0}&user_id={1}&v=5.75".format(cfg.token, v), timeout=5)
-        except r.ConnectionError as e:
+        except r.exceptions.BaseHTTPError as e:
             print("Connection error, trying again in 2s")
             print()
             time.sleep(2)
