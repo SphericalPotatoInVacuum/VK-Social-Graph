@@ -41,9 +41,9 @@ class Main_Widget(QWidget):
 
     @pyqtSlot()
     def on_click(self):
-        os.system("python ../script.py" + str(self.tb_depth) + " " +
-                  str(self.tb_start_id) + " " + str(self.tb_finish_id))
-        return
+        os.system("python ../script.py " + str(self.tb_depth.text()) + " " +
+                  str(self.tb_start_id.text()) + " " + str(self.tb_finish_id.text()))
+        # return
 
     def center(self):
 
