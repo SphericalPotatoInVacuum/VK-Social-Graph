@@ -10,6 +10,16 @@ d = dict()  # Словарь с парами [id : дистанция]
 q = deque()  # Очередь для BFS
 used = dict()  # Словарь посещений
 pred = dict()  # Словарь предков
+fout = open("order.txt", "w")
+
+
+def nameFromID(id):
+    response = r.get(
+        "https://api.vk.com/method/users.get?access_token={0}&user_ids={1}&v=5.75".format(cfg.token, id))
+    name = response.json()["response"][0]["first_name"]
+    surname = response.json()["response"][0]["last_name"]
+    return name + " " + surname
+
 
 maxD, ids, idf = sys.argv[1:]
 maxD = int(maxD)
@@ -69,8 +79,10 @@ if found:
     if not os.path.exists("img"):
         os.makedirs("img")
     id = idf
+    order = []
     while d[id] > 0:
-        print(id)
+        order.append(nameFromID(id))
+        order.append(id)
         response = r.get(
             "https://api.vk.com/method/users.get?access_token={0}&fields=photo_max&user_ids={1}&v=5.75".format(cfg.token, id))
         imgR = r.get(response.json()["response"][0]["photo_max"])
@@ -78,17 +90,17 @@ if found:
             img.write(imgR.content)
             img.close()
         id = pred[id]
-    print(id)
     response = r.get(
         "https://api.vk.com/method/users.get?access_token={0}&fields=photo_max&user_ids={1}&v=5.75".format(cfg.token, id))
     imgR = r.get(response.json()["response"][0]["photo_max"])
     with open("img/" + str(id) + ".jpg", "wb") as img:
         img.write(imgR.content)
         img.close()
-
+    order.append(nameFromID(id))
+    order.append(id)
+    order.reverse()
+    print(len(order), file=fout)
+    for id in order:
+        print(id, file=fout)
 else:
     print("Sorry, finish id is out of max range")
-
-finish = time.clock()
-
-print("Time passed:", finish)
