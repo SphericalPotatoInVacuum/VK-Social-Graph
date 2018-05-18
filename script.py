@@ -3,6 +3,7 @@ import config as cfg
 from collections import deque
 import sys
 import time
+import os
 
 tree = dict()  # Словарь с парами [id : список друзей]
 d = dict()  # Словарь с парами [id : дистанция]
@@ -10,10 +11,10 @@ q = deque()  # Очередь для BFS
 used = dict()  # Словарь посещений
 pred = dict()  # Словарь предков
 
-# Максимальная дистанция, после достижения которой поиск остановится
-maxD = int(input())
-ids = input()  # id, с которого начнётся поиск
-idf = input()  # id, на котором он закончится
+maxD, ids, idf = sys.argv[1:]
+maxD = int(maxD)
+
+start = time.clock()
 
 response = r.get(
     "https://api.vk.com/method/users.get?access_token={0}&user_ids={1}&v=5.75".format(cfg.token, ids))
@@ -24,20 +25,28 @@ idf = response.json()["response"][0]["id"]
 
 q.append(ids)
 d[ids] = 0
-pred[ids] = 0
+pred[ids] = ids
 used[ids] = True
 curD = 0
 found = False
+count = 0
 
 while len(q) > 0 and curD <= maxD and not found:
+    start = time.clock()
     v = q.popleft()
-    response = r.get(
-        "https://api.vk.com/method/users.get?access_token={0}&user_ids={1}&v=5.75".format(cfg.token, v))
     curD = d[v]
     if v == idf:
         found = True
-    response = r.get(
-        "https://api.vk.com/method/friends.get?access_token={0}&user_id={1}&v=5.75".format(cfg.token, v))
+    response = None
+    while response is None:
+        try:
+            response = r.get(
+                "https://api.vk.com/method/friends.get?access_token={0}&user_id={1}&v=5.75".format(cfg.token, v), timeout=5)
+        except r.ConnectionError as e:
+            print("Connection error, trying again in 2s")
+            print()
+            time.sleep(2)
+            continue
     items = response.json().get("response", {"items": []})["items"]
     for item in items:
         if used.get(item, False):
@@ -49,14 +58,27 @@ while len(q) > 0 and curD <= maxD and not found:
             found = True
             break
         q.append(item)
-    time.sleep(0.5)
+        count += 1
 
+    sys.stdout.write("\rTotal people checked: " + str(count))
+    sys.stdout.flush()
+    time.sleep(0.1)
+
+print()
 if found:
+    if not os.path.exists("img"):
+        os.makedirs("img")
     id = idf
     while d[id] > 0:
         print(id)
+        response = r.get(
+            "https://api.vk.com/method/users.get?access_token={0}&fiels=photo_max&user_ids={1}".format(cfg.token, id))
         id = pred[id]
     print(id)
 
 else:
     print("Sorry, finish id is out of max range")
+
+finish = time.clock()
+
+print("Time passed:", finish)
