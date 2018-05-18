@@ -1,0 +1,31 @@
+graph html_table {
+	tab227326627 [label=<<TABLE border = "0" fixedsize = "false" height = "10" width = "100" cellpadding = "0" color = "black">
+      <TR>
+        <TD><img src = "img/227326627.jpg"/></TD>
+      </TR>
+      <TR>
+        <TD>Александр Богданов
+</TD>
+      </TR>
+     </TABLE>> shape=box]
+	tab64010930 [label=<<TABLE border = "0" fixedsize = "false" height = "10" width = "100" cellpadding = "0" color = "black">
+      <TR>
+        <TD><img src = "img/64010930.jpg"/></TD>
+      </TR>
+      <TR>
+        <TD>Женя Бобков
+</TD>
+      </TR>
+     </TABLE>> shape=box]
+	tab227326627 -- tab64010930
+	tab64110957 [label=<<TABLE border = "0" fixedsize = "false" height = "10" width = "100" cellpadding = "0" color = "black">
+      <TR>
+        <TD><img src = "img/64110957.jpg"/></TD>
+      </TR>
+      <TR>
+        <TD>Рита Романова
+</TD>
+      </TR>
+     </TABLE>> shape=box]
+	tab64010930 -- tab64110957
+}

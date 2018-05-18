@@ -5,11 +5,11 @@ import sys
 import time
 import os
 
-tree = dict()  # Словарь с парами [id : список друзей]
-d = dict()  # Словарь с парами [id : дистанция]
-q = deque()  # Очередь для BFS
-used = dict()  # Словарь посещений
-pred = dict()  # Словарь предков
+tree = dict()  #
+d = dict()  #
+q = deque()  #
+used = dict()  #
+pred = dict()  #
 fout = open("order.txt", "w")
 
 
@@ -82,7 +82,7 @@ if found:
     order = []
     while d[id] > 0:
         order.append(nameFromID(id))
-        order.append(id)
+        order.append(str(id))
         response = r.get(
             "https://api.vk.com/method/users.get?access_token={0}&fields=photo_max&user_ids={1}&v=5.75".format(cfg.token, id))
         imgR = r.get(response.json()["response"][0]["photo_max"])
@@ -97,10 +97,11 @@ if found:
         img.write(imgR.content)
         img.close()
     order.append(nameFromID(id))
-    order.append(id)
+    order.append(str(id))
     order.reverse()
-    print(len(order), file=fout)
+    print(len(order) // 2, file=fout)
     for id in order:
         print(id, file=fout)
+    fout.close()
 else:
     print("Sorry, finish id is out of max range")
