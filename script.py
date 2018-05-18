@@ -42,7 +42,7 @@ while len(q) > 0 and curD <= maxD and not found:
         try:
             response = r.get(
                 "https://api.vk.com/method/friends.get?access_token={0}&user_id={1}&v=5.75".format(cfg.token, v), timeout=5)
-        except r.ConnectionError as e:
+        except r.exceptions.BaseHTTPError as e:
             print("Connection error, trying again in 2s")
             print()
             time.sleep(2)
@@ -72,16 +72,16 @@ if found:
     while d[id] > 0:
         print(id)
         response = r.get(
-            "https://api.vk.com/method/users.get?access_token={0}&fields=photo_100&user_ids={1}&v=5.75".format(cfg.token, id))
-        imgR = r.get(response.json()["response"][0]["photo_100"])
+            "https://api.vk.com/method/users.get?access_token={0}&fields=photo_max&user_ids={1}&v=5.75".format(cfg.token, id))
+        imgR = r.get(response.json()["response"][0]["photo_max"])
         with open("img/" + str(id) + ".jpg", "wb") as img:
             img.write(imgR.content)
             img.close()
         id = pred[id]
     print(id)
     response = r.get(
-        "https://api.vk.com/method/users.get?access_token={0}&fields=photo_100&user_ids={1}&v=5.75".format(cfg.token, id))
-    imgR = r.get(response.json()["response"][0]["photo_100"])
+        "https://api.vk.com/method/users.get?access_token={0}&fields=photo_max&user_ids={1}&v=5.75".format(cfg.token, id))
+    imgR = r.get(response.json()["response"][0]["photo_max"])
     with open("img/" + str(id) + ".jpg", "wb") as img:
         img.write(imgR.content)
         img.close()
